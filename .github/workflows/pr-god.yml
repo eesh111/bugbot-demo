@@ -30,7 +30,7 @@ jobs:
           cache: npm
           cache-dependency-path: pr-checker/package-lock.json
 
-      - name: Build MCP + install SDK
+      - name: Build MCP
         working-directory: pr-checker
         run: npm ci && npm run build
 
@@ -44,4 +44,11 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_WORKSPACE: ${{ github.workspace }}
           MCP_SERVER_PATH: ${{ github.workspace }}/pr-checker/dist/mcpServer.js
-        run: npm run pr-god
+        run: |
+          if [ -n "$CURSOR_API_KEY" ]; then
+            echo "Using Cursor SDK agent (CURSOR_API_KEY set)"
+            npm run pr-god
+          else
+            echo "CURSOR_API_KEY unset — using offline heuristic PR-God"
+            npm run pr-god:offline
+          fi
