@@ -3,8 +3,8 @@
  */
 
 import http from "node:http";
-import { placeOrder, getOrder } from "./checkout.js";
-import { createUser, getUser } from "./users.js";
+import { placeOrder, getOrder, refundOrder, loadReceipt } from "./checkout.js";
+import { createUser, getUser, updateProfile } from "./users.js";
 import { calculateLineTotal } from "./pricing.js";
 
 const PORT = process.env.PORT ?? 3000;
@@ -61,6 +61,44 @@ const server = http.createServer(async (req, res) => {
     }
     res.writeHead(200);
     res.end(JSON.stringify(user));
+    return;
+  }
+
+  if (req.method === "POST" && url.pathname === "/refunds") {
+    let body = "";
+    for await (const chunk of req) body += chunk;
+    const { orderId } = JSON.parse(body);
+    const order = refundOrder(orderId);
+    res.writeHead(200);
+    res.end(JSON.stringify(order));
+    return;
+  }
+
+  if (req.method === "GET" && url.pathname.startsWith("/receipts/")) {
+    const orderId = url.pathname.split("/")[2];
+    try {
+      const receipt = await loadReceipt(orderId);
+      res.writeHead(200);
+      res.end(JSON.stringify({ orderId, receipt }));
+    } catch (err) {
+      res.writeHead(404);
+      res.end(JSON.stringify({ error: err.message }));
+    }
+    return;
+  }
+
+  if (req.method === "PUT" && url.pathname.startsWith("/profile/")) {
+    const userId = url.pathname.split("/")[2];
+    let body = "";
+    for await (const chunk of req) body += chunk;
+    try {
+      const user = updateProfile(userId, body);
+      res.writeHead(200);
+      res.end(JSON.stringify(user));
+    } catch (err) {
+      res.writeHead(400);
+      res.end(JSON.stringify({ error: err.message }));
+    }
     return;
   }
 
