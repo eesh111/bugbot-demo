@@ -1,7 +1,11 @@
-# Review Instructions
+# Per-repo review overrides for PR-God / Bugbot
+# These are hard overrides for the agent.
 
-When reviewing pull requests in this repository:
+## Ignore
+- Pure formatting / whitespace-only changes
+- Generated lockfile churn without logic changes
 
-- **Ignore** TypeScript-style nits, formatting preferences, and minor style issues.
-- **Flag** logic bugs, security vulnerabilities, missing authorization checks, and missing test coverage for new behavior.
-- **Prioritize** issues that could cause incorrect charges, unauthorized refunds, data exposure, or privilege escalation.
+## Always flag
+- Authz gaps on money-moving or admin endpoints
+- Path traversal / unsafe path joins
+- Secrets or tokens hardcoded in source
