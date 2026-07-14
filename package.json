@@ -1,7 +1,7 @@
 {
   "name": "bugbot-demo",
-  "version": "1.0.0",
-  "description": "Standalone demo repo for Bugbot PR review testing",
+  "version": "2.0.0",
+  "description": "Demo storefront for PR-God reviews — intentionally buggy feature branch",
   "type": "module",
   "main": "src/server.js",
   "scripts": {

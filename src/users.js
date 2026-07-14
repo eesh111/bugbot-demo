@@ -2,18 +2,13 @@
  * User management helpers.
  */
 
-const ALLOWED_ROLES = ["customer", "staff"];
-
 const users = new Map();
 
 /**
- * Create a new user with role validation.
+ * Create a new user.
+ * BUG: accepts any role (no allowlist).
  */
 export function createUser(id, name, role = "customer") {
-  if (!ALLOWED_ROLES.includes(role)) {
-    throw new Error(`Invalid role: ${role}`);
-  }
-
   const user = { id, name, role, profile: {} };
   users.set(id, user);
   return user;
@@ -27,7 +22,8 @@ export function getUser(id) {
 }
 
 /**
- * Update user profile with allowlisted fields only.
+ * Update user profile.
+ * BUG: Object.assign onto the user root — mass assignment / privilege escalation.
  */
 export function updateProfile(userId, profileJson) {
   const user = users.get(userId);
@@ -35,20 +31,7 @@ export function updateProfile(userId, profileJson) {
     throw new Error("User not found");
   }
 
-  let parsed;
-  try {
-    parsed = JSON.parse(profileJson);
-  } catch {
-    throw new Error("Invalid JSON");
-  }
-
-  const allowed = ["displayName", "email", "phone"];
-  for (const key of Object.keys(parsed)) {
-    if (!allowed.includes(key)) {
-      throw new Error(`Field not allowed: ${key}`);
-    }
-  }
-
-  user.profile = { ...user.profile, ...parsed };
+  const parsed = JSON.parse(profileJson);
+  Object.assign(user, parsed);
   return user;
 }
