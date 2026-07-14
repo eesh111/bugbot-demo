@@ -1,6 +1,6 @@
-# Bugbot Demo
+# bugbot-demo
 
-A minimal Node.js ESM checkout service used to exercise automated PR review tooling.
+Tiny Node checkout service used to demo **PR-God** reviews.
 
 ## Setup
 
@@ -12,5 +12,16 @@ npm start
 
 ## Branches
 
-- `main` — baseline with basic checkout flow and tests
-- `feature/buggy-checkout` — introduces intentional logic, security, and authorization bugs for review demos
+- `main` — clean baseline
+- `feature/buggy-checkout` — intentional bugs for review demos
+
+## Review with PR-God
+
+1. Install and configure the [`pr-god`](https://github.com/eesh111/pr-god) MCP in Cursor.
+2. Run:
+
+```text
+/pr-god eesh111/bugbot-demo #1
+```
+
+Cursor’s agent reviews the PR and posts a `COMMENT` review via the local MCP.
