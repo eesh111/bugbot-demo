@@ -16,26 +16,26 @@ jobs:
       - name: Checkout PR
         uses: actions/checkout@v4
 
-      - name: Checkout pr-checker MCP
+      - name: Checkout pr-god MCP
         uses: actions/checkout@v4
         with:
-          repository: eesh111/pr-checker
+          repository: eesh111/pr-god
           ref: feature/pr-god
-          path: pr-checker
+          path: pr-god
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: pr-checker/package-lock.json
+          cache-dependency-path: pr-god/package-lock.json
 
       - name: Build MCP
-        working-directory: pr-checker
+        working-directory: pr-god
         run: npm ci && npm run build
 
       - name: Run PR-God
-        working-directory: pr-checker
+        working-directory: pr-god
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +43,7 @@ jobs:
           REPO: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_WORKSPACE: ${{ github.workspace }}
-          MCP_SERVER_PATH: ${{ github.workspace }}/pr-checker/dist/mcpServer.js
+          MCP_SERVER_PATH: ${{ github.workspace }}/pr-god/dist/mcpServer.js
         run: |
           if [ -n "$CURSOR_API_KEY" ]; then
             echo "Using Cursor SDK agent (CURSOR_API_KEY set)"
