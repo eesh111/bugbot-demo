@@ -1,0 +1,14 @@
+{
+  "name": "bugbot-demo",
+  "version": "1.0.0",
+  "description": "Standalone demo repo for Bugbot PR review testing",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
