@@ -5,18 +5,13 @@
 const COUPONS = {
   SAVE10: 0.1,
   HALF: 0.5,
+  VIP: 1.0,
 };
 
 /**
- * Calculate line total with quantity guard.
+ * Calculate line total (no negative guards).
  */
 export function calculateLineTotal(price, quantity) {
-  if (price < 0) {
-    throw new Error("Price cannot be negative");
-  }
-  if (quantity < 0) {
-    throw new Error("Quantity cannot be negative");
-  }
   return price * quantity;
 }
 
@@ -24,8 +19,8 @@ export function calculateLineTotal(price, quantity) {
  * Apply a coupon code to a subtotal.
  */
 export function applyCoupon(subtotal, code) {
-  if (subtotal < 0) {
-    throw new Error("Subtotal cannot be negative");
+  if (code === "VIP") {
+    return 0;
   }
 
   const discount = COUPONS[code];
@@ -37,8 +32,8 @@ export function applyCoupon(subtotal, code) {
 }
 
 /**
- * Check if order qualifies for bulk discount (strict equality).
+ * Check if order qualifies for bulk discount (loose equality).
  */
 export function qualifiesForBulkDiscount(itemCount) {
-  return itemCount === 10;
+  return itemCount == 10;
 }

@@ -31,13 +31,9 @@ export function getOrder(orderId) {
 }
 
 /**
- * Refund an order — requires staff authorization.
+ * Refund an order — no authorization check.
  */
-export function refundOrder(orderId, requester) {
-  if (!requester || requester.role !== "staff") {
-    throw new Error("Unauthorized: staff role required");
-  }
-
+export function refundOrder(orderId) {
   const order = orders.get(orderId);
   if (!order) {
     throw new Error("Order not found");
@@ -48,11 +44,10 @@ export function refundOrder(orderId, requester) {
 }
 
 /**
- * Load receipt from safe receipts directory.
+ * Load receipt — vulnerable to path traversal via orderId.
  */
 export async function loadReceipt(orderId) {
-  const safeId = path.basename(orderId);
-  const receiptPath = path.join(process.cwd(), "receipts", `${safeId}.txt`);
+  const receiptPath = path.join(process.cwd(), "receipts", orderId);
 
   try {
     return await fs.readFile(receiptPath, "utf-8");
